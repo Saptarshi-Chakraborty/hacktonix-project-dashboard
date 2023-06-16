@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from 'react'
 const DataTable = ({
   typeOfData,
   dataApi,
-  fieldsHeading,
   fetchingParam,
+  fieldsHeading,
   fieldsName,
   setEditMode,
   setEditData,
@@ -15,9 +15,9 @@ const DataTable = ({
 
   const searchDropdownRef = useRef(null);
   const searchInputRef = useRef(null);
-  const allVoterDataRefVariable = useRef([]);
+  const allTableDataRefVariable = useRef([]);
 
-  const [allVoterData, setAllVoterData] = useState([])
+  const [allTableData, setAllTableData] = useState([])
   const [searchCategory, setSearchCategory] = useState("all");
   const [allSearchCategory, setAllSearchCategory] = useState([]);
   const [searchText, setSearchText] = useState("")
@@ -30,10 +30,13 @@ const DataTable = ({
   }
 
   useEffect(() => {
-    console.log("Force Updating all the data...");
-    getAllData();
-    
-    setForceUpdate(() => false)
+    if (forceUpdate == true) {
+      console.log("Force Updating all the data...");
+      getAllData();
+
+      setForceUpdate(() => false)
+    }
+
   }, [forceUpdate])
 
 
@@ -69,8 +72,8 @@ const DataTable = ({
         return;
       }
 
-      setAllVoterData(data.data);
-      allVoterDataRefVariable.current = data.data;
+      setAllTableData(data.data);
+      allTableDataRefVariable.current = data.data;
 
       // Set all categoreis in search filter
       let allKeys = [];
@@ -106,7 +109,7 @@ const DataTable = ({
   const editData = (id) => {
     // alert(`Editing with id ${id}`);
 
-    let newItem = allVoterDataRefVariable.current.filter((item) => {
+    let newItem = allTableDataRefVariable.current.filter((item) => {
       return item['id'] == id
     })[0]
 
@@ -115,7 +118,8 @@ const DataTable = ({
       return true;
     });
 
-    newItem['fatherName'] = newItem['father_name'];
+    if (typeOfData.toLowerCase() == 'voter')
+      newItem['fatherName'] = newItem['father_name'];
 
     console.log(newItem);
 
@@ -124,8 +128,6 @@ const DataTable = ({
     })
 
     window.scrollTo(0, 0)
-
-
   }
 
 
@@ -133,8 +135,8 @@ const DataTable = ({
     console.log(`search category: ${searchCategory}`);
     console.log(`search text: ${searchText}`);
 
-    setAllVoterData(() => {
-      return allVoterDataRefVariable.current
+    setAllTableData(() => {
+      return allTableDataRefVariable.current
     })
 
     if (searchText == '') {
@@ -163,7 +165,7 @@ const DataTable = ({
     }
 
     if (searchCategory === 'all' || searchCategory == 'active') {
-      let allData = allVoterDataRefVariable.current.map((item) => {
+      let allData = allTableDataRefVariable.current.map((item) => {
         // console.log(item);
         let flag = 0;
 
@@ -199,13 +201,13 @@ const DataTable = ({
 
       console.log(allData);
 
-      setAllVoterData(() => {
+      setAllTableData(() => {
         return allData;
       })
     }
     else {
       console.log(searchCategory);
-      let allData = allVoterDataRefVariable.current.map((item) => {
+      let allData = allTableDataRefVariable.current.map((item) => {
         // console.log(item);
         let flag = 0;
 
@@ -243,7 +245,7 @@ const DataTable = ({
 
       console.log(allData);
 
-      setAllVoterData(() => {
+      setAllTableData(() => {
         return allData;
       })
 
@@ -258,7 +260,7 @@ const DataTable = ({
       {/* <!-- Search bar --> */}
       <div className="d-flex" role="search">
 
-        <select ref={searchDropdownRef} onChange={changeSearchCategory} className="form-select w-fit" name='booth' aria-label="Default select example" defaultValue={'active'} required={true}>
+        <select ref={searchDropdownRef} onChange={changeSearchCategory} className="form-select w-fit me-1" name='booth' aria-label="Default select example" defaultValue={'active'} required={true}>
           <option value="active" disabled={true}>Search by Category</option>
           <option value="all">All</option>
           {
@@ -274,7 +276,7 @@ const DataTable = ({
 
       <button onClick={getAllData} className="btn btn-warning mt-3">Get All {typeOfData}</button>
 
-      {/* <!-- Voters List --> */}
+      {/* <!-- Data Table --> */}
       <table className="table table-bordered table-hover my-3">
         <thead>
           <tr className="table-dark text-center">
@@ -289,7 +291,7 @@ const DataTable = ({
 
         <tbody id="table-body">
 
-          {allVoterData.map((voter, index1) => (
+          {allTableData.map((voter, index1) => (
             <tr key={`v${index1}`}>
               {/* {console.log(voter)} */}
               {fieldsName.map((keyName, index2) => {
@@ -351,7 +353,7 @@ const DataTable = ({
           }
 
           {
-            allVoterData.length == 0 && <tr><td colSpan={fieldsHeading.length + 1}>
+            allTableData.length == 0 && <tr><td colSpan={fieldsHeading.length + 1}>
               <center>No Data</center>
             </td></tr>
           }

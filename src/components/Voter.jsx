@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { isObjectEmpty } from '../utils/utils';
 import VoterDataCard from './VoterDataCard';
 import DataTable from './DataTable';
 
@@ -12,24 +13,17 @@ const Voter = () => {
     const statusRef = useRef(null);
 
     // State Variables
-    const [voter, setVoter] = useState({ id: "", name: "", fatherName: "", gender: "m", dob: "", address: "", booth: "", status: "" })
-    const [allBooths, setAllBooths] = useState([])
+    const [voter, setVoter] = useState({ id: "", name: "", fatherName: "", gender: "m", dob: "", address: "", booth: "", status: "" });
+    const [allBooths, setAllBooths] = useState([]);
     const [newVoterData, setNewVoterData] = useState({});
     const [isEditMode, setIsEditMode] = useState(false);
-    const [forceUpdate, setForceUpdate] = useState(false)
+    const [forceUpdate, setForceUpdate] = useState(false);
 
     // Data Variables
     const getAllDataApi = "http://localhost/hacktonix-server/voter.php";
     const action = "allVoters";
     const allFields = ["Id", "Name", "Father's Name", "Gender", "DOB", "Address", "Booth", "Status"]
     const dataKeys = ["id", "name", "father_name", "gender", "dob", "address", "booth", "status"]
-
-
-
-
-    const isObjectEmpty = (objectName) => {
-        return Object.keys(objectName).length === 0 && objectName.constructor === Object;
-    }
 
 
     const getAllActiveBooths = () => {
@@ -75,7 +69,6 @@ const Voter = () => {
         })
     }
 
-
     // Using as window.onload
     useEffect(() => {
         return () => {
@@ -100,7 +93,7 @@ const Voter = () => {
         setVoter((oldValue) => {
             return { ...oldValue, [ref.current.name]: ref.current.value }
         })
-        console.log(voter);
+        // console.log(voter);
     }
 
     const submitForm = (e) => {
@@ -195,12 +188,7 @@ const Voter = () => {
         setVoter(() => {
             return { id: "", name: "", fatherName: "", gender: "m", dob: "", address: "", booth: "", status: "" }
         })
-
     }
-
-
-
-
 
 
     return (
@@ -281,7 +269,7 @@ const Voter = () => {
                 </div>
 
                 <button onClick={resetForm} type="reset" className="btn btn-lg btn-danger me-3" id="resetButton">Clear All</button>
-                <button type="submit" id="submitButton" className="btn btn-lg btn-success">{isEditMode ? `Confirm Edit` : 'Submit'}</button>
+                <button type="submit" className="btn btn-lg btn-success">{isEditMode ? `Confirm Edit` : 'Submit'}</button>
             </form>
 
             {/* <!-- QR showing Card --> */}
