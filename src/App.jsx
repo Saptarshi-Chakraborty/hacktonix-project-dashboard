@@ -5,14 +5,15 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Navbar from './components/Navbar';
-import Booth from './components/Booth';
+import Options from './components/Options';
 
 function App() {
 
   return (
     <>
       <Navbar />
-      <Booth />
+      <Options/>
+
       <ToastContainer
         position="top-right"
         autoClose={5000}

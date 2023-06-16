@@ -243,7 +243,7 @@ const Booth = () => {
                     <input value={booth.area} onChange={() => onChange(areaRef)} ref={areaRef} type="text" className="form-control" id="boothArea" name='area' required={true} />
                 </div>
 
-                <input type="text" onChange={changeOption} className="form-control" name='options' value={booth.options} disabled={true} />
+                <input type="hidden" onChange={changeOption} className="form-control" name='options' value={booth.options} disabled={true} />
 
                 {/* <!-- Options --> */}
                 <div className="mb-3">

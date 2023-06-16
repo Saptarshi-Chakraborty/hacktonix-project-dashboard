@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify';
 import { isObjectEmpty } from '../utils/utils';
 import VoterDataCard from './VoterDataCard';
 import DataTable from './DataTable';
@@ -43,11 +44,11 @@ const Voter = () => {
                 data = JSON.parse(_rawData);
             } catch (error) {
                 console.table(error);
-                alert("INVALID DATA FROM SERVER");
+                toast.error("INVALID DATA FROM SERVER");
             }
 
             if (data.status != "success" || data.data === undefined) {
-                alert("Server sent a Failed Data");
+                toast.error("Server sent a Failed Data");
                 return;
             }
 
@@ -64,7 +65,7 @@ const Voter = () => {
             }
 
         }).catch((error) => {
-            alert("An error happend during fetching all booths");
+            toast.error("An error happend during fetching all booths");
             console.table(error);
         })
     }
@@ -132,13 +133,13 @@ const Voter = () => {
                 data = JSON.parse(_rawData);
             } catch (error) {
                 console.log(error);
-                alert("INVALID DATA FROM SERVER");
+                toast.error("INVALID DATA FROM SERVER");
                 return;
             }
             console.log(data);
 
             if (data.status == 'error') {
-                alert(`${data.type} - ERROR from Server`);
+                toast.error(`${data.type} - ERROR from Server`);
                 return;
             }
 
@@ -153,7 +154,7 @@ const Voter = () => {
                     }
                 })
 
-                alert("NEW VOTER CREATED SUCCESSFULLY");
+                toast.success("NEW VOTER CREATED SUCCESSFULLY");
                 console.log(`New Voter ID : ${data.id}`);
 
             } else {
@@ -165,14 +166,14 @@ const Voter = () => {
                     }
                 })
 
-                alert("VOTER DATA EDITED SUCCESSFULY");
+                toast.success("VOTER DATA EDITED SUCCESSFULY");
             }
             resetForm();
 
             setForceUpdate(() => true)
 
         }).catch((error) => {
-            alert("");
+            toast.error("An error happend during fetching data from server");
             console.table(error);
         });
     }

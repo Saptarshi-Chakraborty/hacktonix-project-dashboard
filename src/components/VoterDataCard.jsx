@@ -1,6 +1,7 @@
 import React from 'react'
 import * as htmlToImage from 'html-to-image';
 import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+import { toast } from 'react-toastify';
 import '../css/VoterDataCard.css'
 
 const VoterDataCard = ({ newVoterData }) => {
@@ -44,11 +45,10 @@ const VoterDataCard = ({ newVoterData }) => {
                 link.download = `votercard - ${newVoterData.name}.png`;
                 link.href = dataUrl
                 link.click();
-
-
             })
             .catch(function (error) {
                 console.error('oops, something went wrong!', error);
+                toast.error("Error happend in creatig Voter image");
             });
     }
 

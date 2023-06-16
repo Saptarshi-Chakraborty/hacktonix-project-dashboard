@@ -1,85 +1,156 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify';
+import DataTable from './DataTable';
 
 const Options = () => {
+    const nameRef = useRef(null);
+    const codeRef = useRef(null);
+    const statusRef = useRef(null);
+
+    // State Variables
+    const [option, setOption] = useState({ id: "", name: "", code: "", status: "" });
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [forceUpdate, setForceUpdate] = useState(false);
+
+    // Data Variables
+    const getAllDataApi = "http://localhost/hacktonix-server/option.php";
+    const action = "allOptions";
+    const allFields = ["Id", "Name", "Code", "Status"]
+    const dataKeys = ["id", "name", "code", "status"]
+
+
+    const onChange = (ref) => {
+        setOption((oldValue) => {
+            return { ...oldValue, [ref.current.name]: ref.current.value }
+        })
+        // console.log(booth);
+    }
+
+    const submitForm = (e) => {
+        e.preventDefault();
+
+        // Api Call
+        const SUBMIT_API = "http://localhost/hacktonix-server/option.php";
+        let primaryFormData = {
+            action: isEditMode ? "editOption" : "newOption",
+            name: option.name.trim(),
+            code: option.code.trim(),
+        }
+
+        if (isEditMode == true) {
+            primaryFormData['id'] = option.id.trim();
+            primaryFormData['status'] = option.status.trim();
+        }
+
+        console.table(primaryFormData);
+        // return;
+        let formData = new FormData();
+        for (let key in primaryFormData)
+            formData.append(key, primaryFormData[key]);
+
+        const params = { method: "POST", body: formData };
+
+        fetch(SUBMIT_API, params).then(data => data.text()).then((_rawData) => {
+            // console.log(_rawData);
+
+            let data;
+            try {
+                data = JSON.parse(_rawData);
+            } catch (error) {
+                console.log(error);
+                toast.error("INVALID DATA FROM SERVER");
+                return;
+            }
+            // console.log(data);
+
+            if (data.status == 'error') {
+                toast.error(`${data.type} - ERROR from Server`);
+                return;
+            }
+
+            // console.log(`isEditMode: ${isEditMode}`);
+
+            if (isEditMode == false) {
+                toast.success(`NEW OPTION CREATED SUCCESSFULLY - ID ${data.id}`);
+                console.log(`New Option ID : ${data.id}`);
+            } else {
+                toast.success("OPTION DATA EDITED SUCCESSFULY");
+            }
+
+            resetForm();
+            setForceUpdate(() => true);
+        }).catch((error) => {
+            toast.error("Error happend in Fetching Data");
+            console.table(error);
+        });
+
+    }
+
+    const resetForm = () => {
+        if (isEditMode == true) {
+            setIsEditMode(() => {
+                return false
+            })
+        }
+
+        setOption(() => {
+            return { id: "", name: "", code: "", status: "" }
+        })
+    }
+
+
     return (
         <div className="container py-2 px-0 mb-4">
             <h1 className="text-center text-decoration-underline">Option Details</h1>
 
             {/* <!-- Add new Voter --> */}
-            <form className="my-4 border border-2 border-warning p-2 rounded">
-                <h2 className="mb-2">Add new Option</h2>
+            <form onSubmit={submitForm} className="my-4 border border-2 border-warning p-2 rounded">
+                {/* if isEditMode is true */}
+                {isEditMode && <h2 className="mb-2">Edit option of id : {option.id}</h2>}
 
-                {/* <!-- id (in edit mode) --> */}
-                <input type="hidden" value="" id="optionId" />
+                {/* if isEditMode is false */}
+                {isEditMode || <h2 className="mb-2">Add new Option</h2>}
 
                 {/* <!-- Name --> */}
                 <div className="mb-3">
                     <label htmlFor="optionName" className="form-label fw-bold">Option Name</label>
-                    <input type="text" className="form-control" id="optionName" />
+                    <input ref={nameRef} value={option.name} onChange={() => onChange(nameRef)} name='name' type="text" className="form-control" id="optionName" required={true} />
                 </div>
 
                 {/* <!-- Code --> */}
                 <div className="mb-3">
                     <label htmlFor="optionCode" className="form-label fw-bold">Option Code</label>
-                    <input type="text" className="form-control" id="optionCode" />
+                    <input ref={codeRef} value={option.code} onChange={() => onChange(codeRef)} name='code' type="text" className="form-control" id="optionCode" required={true} />
                 </div>
 
                 {/* <!-- Status (in edit mode) --> */}
-                <div className="mb-3" id="optionStatusBox" style={{ display: "none" }}>
+                <div className="mb-3" id="optionStatusBox" hidden={!isEditMode}>
                     <label htmlFor="optionStatus" className="form-label">Status</label>
-                    <select className="form-select" id="optionStatus" aria-label="Default select example">
+                    <select ref={statusRef} value={option.status} onChange={() => onChange(statusRef)} name='status' className="form-select" id="optionStatus" aria-label="Default select example" required={isEditMode}>
                         <option value="active">Active</option>
                         <option value="banned">Banned</option>
                         <option value="inactive">Inactive</option>
                     </select>
                 </div>
 
-                <button type="button" id="resetButton" className="btn btn-lg btn-danger me-3">Clear All</button>
-                <button type="button" id="submitButton" className="btn btn-lg btn-success">Submit</button>
+                <button onClick={resetForm} type="reset" className="btn btn-lg btn-danger me-3">Clear All</button>
+                <button type="submit" className="btn btn-lg btn-success">{isEditMode ? `Confirm Edit` : 'Submit'}</button>
             </form>
 
             <hr />
 
             {/* <!-- Show all options --> */}
-            <div className="mt-4 py-3">
-                <h2 className="mb-3">All Options</h2>
-
-                {/* <!-- Search bar --> */}
-                <div className="d-flex" role="search">
-                    <input className="form-control me-2" type="search" placeholder="Search for an option" aria-label="Search" />
-                    <button className="btn btn-outline-success">Search</button>
-                </div>
-
-                <button className="btn btn-warning mt-3" >Get All Options</button>
-
-                {/* <!-- Options List --> */}
-                <table className="table table-bordered table-hover my-3">
-                    <thead>
-                        <tr className="table-dark text-center">
-                            <th scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Code</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="table-body">
-                        {/* <!-- <tr>
-                    <td>1</td>
-                    <td>Option 1</td>
-                    <td>OPT1</td>
-                    <td>
-                        <span className="badge text-bg-success">Active</span>
-                    </td>
-                    <td className="text-center">
-                        <button type="button" className="btn btn-outline-primary">Edit</button>
-                    </td>
-                </tr> --> */}
-                    </tbody>
-
-                </table>
-            </div>
+            <DataTable
+                typeOfData="Option"
+                dataApi={getAllDataApi}
+                fetchingParam={{ action }}
+                fieldsHeading={allFields}
+                fieldsName={dataKeys}
+                setEditMode={setIsEditMode}
+                setEditData={setOption}
+                forceUpdate={forceUpdate}
+                setForceUpdate={setForceUpdate}
+            />
 
 
         </div>

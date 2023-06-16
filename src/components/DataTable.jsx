@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify';
 
 
 const DataTable = ({
@@ -62,7 +63,7 @@ const DataTable = ({
         data = JSON.parse(_rawData);
       } catch (error) {
         console.log(error);
-        alert(`INVALID Data Sent by Server`);
+        toast.error(`INVALID Data Sent by Server`);
         return;
       }
 
@@ -87,7 +88,7 @@ const DataTable = ({
 
     }).catch((error) => {
       console.log(error);
-      alert(`ERROR in fetching all ${typeOfData} data`);
+      toast.error(`ERROR in fetching all ${typeOfData} data`);
     });
 
   }
@@ -107,7 +108,7 @@ const DataTable = ({
 
 
   const editData = (id) => {
-    // alert(`Editing with id ${id}`);
+    // toast(`Editing with id ${id}`);
 
     let newItem = allTableDataRefVariable.current.filter((item) => {
       return item['id'] == id
