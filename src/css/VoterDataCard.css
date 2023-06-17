@@ -8,16 +8,46 @@
   background-color: brown;
 }
 
-#downloadButton{
-    margin: auto ;
-    margin-top: 10px !important;
-    width: fit-content !important;
+#downloadButton {
+  margin: auto;
+  margin-top: 10px !important;
+  width: fit-content !important;
 }
 
-#voter-card{
-    /* background-color: aquamarine !important; */
-    width: fit-content !important;
-    border-radius: 8px;
-    background-color: white;
+#voter-card {
+  width: fit-content !important;
+  border-radius: 8px;
+  background-color: white;
 }
 
+#cardTemplateBox {
+  display: none;
+  max-width: 10000px !important;
+  width: 1200px !important;
+  z-index: 2;
+}
+
+#cardTemplate {
+  border-width: 2px !important;
+  margin-right: -300px;
+  border-radius: 8px;
+  background-color: white;
+  gap: 25px !important;
+}
+
+#cardTemplate img {
+  height: 450px;
+  width: 450px !important;
+  aspect-ratio: 1/1;
+}
+
+#voterDetails {
+  margin: auto;
+  font-size: 32px;
+}
+
+#voterDetails h4 {
+  font-size: 40px;
+  margin-bottom: 15px;
+  margin-right: 20px;
+}

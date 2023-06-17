@@ -77,15 +77,15 @@ const Voter = () => {
             // console.log(`newVoterData is empty: ${isObjectEmpty(newVoterData)}`);
 
             // Auto Fill test values
-            setVoter((oldValue) => {
-                return {
-                    ...oldValue,
-                    name: "Name Chakraborty",
-                    fatherName: "Father Chakraborty",
-                    dob: "2003-06-05",
-                    address: "1/2, A B C Road, Chourangi More, Kolkata"
-                }
-            })
+            // setVoter((oldValue) => {
+            //     return {
+            //         ...oldValue,
+            //         name: "Name Chakraborty",
+            //         fatherName: "Father Chakraborty",
+            //         dob: "2003-06-05",
+            //         address: "1/2, A B C Road, Chourangi More, Kolkata"
+            //     }
+            // })
         }
     }, [])
 
@@ -248,6 +248,13 @@ const Voter = () => {
                 <div className="mb-3">
                     <label className="form-label">Booth</label>
                     <select onChange={() => onChange(boothRef)} ref={boothRef} className="form-select" name='booth' aria-label="Default select example" required={true}>
+                        {
+                            (allBooths.length == 0) &&
+                            <option selected={true} value="" disabled={true}>
+                                No Booth Found
+                            </option>
+                        }
+
                         {
                             allBooths.map((booth) => (
                                 <option key={booth.code} value={booth.code}>

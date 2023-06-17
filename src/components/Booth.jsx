@@ -57,7 +57,7 @@ const Booth = () => {
             })
 
         }).catch((error) => {
-            toast.error("An error happend during fetching all booths");
+            toast.error("An error happend during fetching all options from server");
             console.table(error);
         })
     }
@@ -169,6 +169,11 @@ const Booth = () => {
         setBooth(() => {
             return { id: "", name: "", code: "", area: "", options: "", status: "" }
         })
+
+        let allCheckboxNodes = document.querySelectorAll(".option");
+        for (let i = 0; i < allCheckboxNodes.length; i++) {
+            allCheckboxNodes[i].checked = false;
+        }
     }
 
     // Using as window.onload
@@ -177,14 +182,14 @@ const Booth = () => {
             getAllAvailavleOptions();
 
             // Auto Fill test values
-            setBooth((oldValue) => {
-                return {
-                    ...oldValue,
-                    name: "Booth 8",
-                    code: "BTH8",
-                    area: "Hawaghor, Megher Desh"
-                }
-            })
+            // setBooth((oldValue) => {
+            //     return {
+            //         ...oldValue,
+            //         name: "Booth 8",
+            //         code: "BTH8",
+            //         area: "Hawaghor, Megher Desh"
+            //     }
+            // })
         }
     }, [])
 
@@ -234,7 +239,7 @@ const Booth = () => {
                 {/* <!-- Code --> */}
                 <div className="mb-3">
                     <label htmlFor="boothCode" className="form-label fw-bold">Booth Code</label>
-                    <input value={booth.code} onChange={() => onChange(codeRef)} ref={codeRef} type="text" className="form-control" id="boothCode" name='code' />
+                    <input value={booth.code} onChange={() => onChange(codeRef)} ref={codeRef} type="text" className="form-control" id="boothCode" name='code' required={true} />
                 </div>
 
                 {/* <!-- Area -->  */}

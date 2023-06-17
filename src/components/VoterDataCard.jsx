@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import * as htmlToImage from 'html-to-image';
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+import QRCode from 'qrcode'
 import { toast } from 'react-toastify';
 import '../css/VoterDataCard.css'
 
 const VoterDataCard = ({ newVoterData }) => {
+    const [qrImageUrl, setQrImageUrl] = useState(null);
+
     if (Object.keys(newVoterData).length == 0) {
         newVoterData = {
             name: "My Name",
@@ -28,11 +30,22 @@ const VoterDataCard = ({ newVoterData }) => {
 
     let dateOfBirth = new Date(newVoterData.dob).toDateString();
 
-    const qrImage = `https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${newVoterData.qrData}&chld=H|1&choe=UTF-8`;
+    // const qrImage = `https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=${newVoterData.qrData}&chld=H|1&choe=UTF-8`;
+
+    const createQrCode = () => {
+        QRCode.toDataURL(newVoterData.qrData, { errorCorrectionLevel: 'H' }
+        ).then(url => {
+            setQrImageUrl(url);
+            // console.log(url);
+        }).catch(err => {
+            console.error(err)
+        })
+    }
+
 
     const downloadVoterCard = () => {
         const node = document.getElementById('voter-card');
-        console.log(node);
+        // console.log(node);
 
         // return;
         htmlToImage.toPng(node)
@@ -49,8 +62,15 @@ const VoterDataCard = ({ newVoterData }) => {
             .catch(function (error) {
                 console.error('oops, something went wrong!', error);
                 toast.error("Error happend in creatig Voter image");
-            });
+            })
     }
+
+    useEffect(() => {
+
+        if (newVoterData.qrData != "") {
+            createQrCode();
+        }
+    }, [newVoterData.qrData])
 
 
 
@@ -59,7 +79,7 @@ const VoterDataCard = ({ newVoterData }) => {
             <div className="card my-3 border-0 align-items-center">
                 <div id='voter-card' className="d-flex flex-row gap-3 border border-danger w-fit">
                     <div>
-                        <img src={qrImage} className="img-fluid rounded-start" alt="..." />
+                        <img src={qrImageUrl} className="img-fluid rounded-start" alt="..." />
                     </div>
 
                     <div className="col-md-8">
@@ -79,8 +99,26 @@ const VoterDataCard = ({ newVoterData }) => {
                 <button onClick={downloadVoterCard} className='btn btn-primary' id='downloadButton'>Download Your Voter Card</button>
             </div >
 
-            <div id='cardTemplate' className="hidden" style={{ display: "none" }}>
-                Hello Paaji
+            <div id='cardTemplateBox' className="hidden" >
+                <div id='cardTemplate' className="d-flex flex-row gap-3 border border-danger w-fit voter-card">
+                    <div>
+                        <img src={qrImageUrl} className="img-fluid rounded-start" alt="..." />
+                    </div>
+
+                    <div id='voterDetails' className="col-md-8">
+                        <div className="card-body">
+                            <h4 className="card-title">{newVoterData.name}</h4>
+                            <p className="card-text mb-0">Voter ID : <b>{newVoterData.id}</b></p>
+                            <p className="card-text mb-0">Father : <b>{newVoterData.fatherName}</b></p>
+                            <p className="card-text mb-0">Gender : <b>{fullGender}</b></p>
+                            <p className="card-text mb-0">Date of Birth : <b>{dateOfBirth}</b></p>
+                            <p className="card-text mb-0">Address : <b>{newVoterData.address}</b></p>
+                            <p className="card-text mb-0">Booth : <b>{newVoterData.booth}</b></p>
+
+                            <p className="card-text w-fit pt-1"><small className="text-body-secondary">Generated at : {new Date().toString()}</small></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </>
 

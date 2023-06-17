@@ -37,7 +37,6 @@ const DataTable = ({
 
       setForceUpdate(() => false)
     }
-
   }, [forceUpdate])
 
 
@@ -48,7 +47,7 @@ const DataTable = ({
     console.log("Fetching all data...");
 
     const fetchingParameterName = Object.keys(fetchingParam)[0]
-    console.log(fetchingParameterName, fetchingParam[fetchingParameterName]);
+    // console.log(fetchingParameterName, fetchingParam[fetchingParameterName]);
 
     let formData = new FormData();
     formData.append(fetchingParameterName, fetchingParam[fetchingParameterName]);
@@ -88,7 +87,11 @@ const DataTable = ({
 
     }).catch((error) => {
       console.log(error);
-      toast.error(`ERROR in fetching all ${typeOfData} data`);
+
+      if (error.message == "Failed to fetch")
+        toast.error(`ERROR - Server not responding`);
+      else
+        toast.error(`ERROR in fetching all ${typeOfData} data`);
     });
 
   }
@@ -104,6 +107,7 @@ const DataTable = ({
     setSearchText(() => {
       return searchInputRef.current.value
     })
+    searchData();
   }
 
 
