@@ -44,7 +44,7 @@ const VoterDataCard = ({ newVoterData }) => {
 
 
     const downloadVoterCard = () => {
-        const node = document.getElementById('voter-card');
+        const node = document.getElementById('cardTemplate'); 
         // console.log(node);
 
         // return;

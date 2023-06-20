@@ -21,10 +21,14 @@
 }
 
 #cardTemplateBox {
-  display: none;
+  /* display: none; */
   max-width: 10000px !important;
   width: 1200px !important;
   z-index: 2;
+  position: absolute ;
+  top: -100px;
+  left: -10000px;
+
 }
 
 #cardTemplate {
