@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { toast } from 'react-toastify';
 import DataTable from './DataTable';
+import CONSTANT from '../constants';
 
 const Options = () => {
     const nameRef = useRef(null);
@@ -13,7 +14,7 @@ const Options = () => {
     const [forceUpdate, setForceUpdate] = useState(false);
 
     // Data Variables
-    const getAllDataApi = "http://localhost/hacktonix-server/option.php";
+    const getAllDataApi = CONSTANT.optionsApi;
     const action = "allOptions";
     const allFields = ["Id", "Name", "Code", "Status"]
     const dataKeys = ["id", "name", "code", "status"]
@@ -30,7 +31,7 @@ const Options = () => {
         e.preventDefault();
 
         // Api Call
-        const SUBMIT_API = "http://localhost/hacktonix-server/option.php";
+        const SUBMIT_API = CONSTANT.optionsApi;
         let primaryFormData = {
             action: isEditMode ? "editOption" : "newOption",
             name: option.name.trim(),

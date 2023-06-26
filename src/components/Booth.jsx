@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify';
 import DataTable from './DataTable';
 import { isObjectEmpty } from '../utils/utils';
+import CONSTANT from '../constants';
 
 
 const Booth = () => {
@@ -17,7 +18,7 @@ const Booth = () => {
     const [forceUpdate, setForceUpdate] = useState(false);
 
     // Data Variables
-    const getAllDataApi = "http://localhost/hacktonix-server/booth.php";
+    const getAllDataApi = CONSTANT.boothApi;
     const action = "allBooth";
     const allFields = ["Id", "Name", "Code", "Area", "Options Available", "Status"]
     const dataKeys = ["id", "name", "code", "area", "options", "status"]
@@ -25,7 +26,7 @@ const Booth = () => {
 
     const getAllAvailavleOptions = () => {
         console.log("Getting all available options...");
-        const API = "http://localhost/hacktonix-server/option.php";
+        const API = CONSTANT.optionsApi;
 
         let formData = new FormData();
         formData.append("action", "allAvailavleOptions");
@@ -100,7 +101,7 @@ const Booth = () => {
         }
 
         // Api Call
-        const SUBMIT_API = "http://localhost/hacktonix-server/booth.php";
+        const SUBMIT_API = CONSTANT.boothApi;
         let primaryFormData = {
             action: isEditMode ? "editBooth" : "newBooth",
             name: booth.name.trim(),

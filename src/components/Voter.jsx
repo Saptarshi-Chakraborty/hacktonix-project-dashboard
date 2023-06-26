@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { isObjectEmpty } from '../utils/utils';
 import VoterDataCard from './VoterDataCard';
 import DataTable from './DataTable';
+import CONSTANT from '../constants';
 
 const Voter = () => {
     const nameRef = useRef(null);
@@ -21,7 +22,7 @@ const Voter = () => {
     const [forceUpdate, setForceUpdate] = useState(false);
 
     // Data Variables
-    const getAllDataApi = "http://localhost/hacktonix-server/voter.php";
+    const getAllDataApi = CONSTANT.voterApi;
     const action = "allVoters";
     const allFields = ["Id", "Name", "Father's Name", "Gender", "DOB", "Address", "Booth", "Status"]
     const dataKeys = ["id", "name", "father_name", "gender", "dob", "address", "booth", "status"]
@@ -29,7 +30,7 @@ const Voter = () => {
 
     const getAllActiveBooths = () => {
         console.log("Getting all active booths...");
-        const API = "http://localhost/hacktonix-server/booth.php";
+        const API = CONSTANT.boothApi;
 
         let formData = new FormData();
         formData.append("action", "allActiveBooths");
@@ -101,7 +102,7 @@ const Voter = () => {
         e.preventDefault();
         console.table(voter);
 
-        const SUBMIT_API = "http://localhost/hacktonix-server/voter.php";
+        const SUBMIT_API = CONSTANT.voterApi;
         let primaryFormData = {
             action: isEditMode ? "editVoter" : "newVoter",
             name: voter.name.trim(),
