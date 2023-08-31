@@ -72,6 +72,11 @@ const DataTable = ({
         return;
       }
 
+      if (data.data.length === 0) {
+        toast.info("No data is found in server...");
+        return;
+      }
+
       setAllTableData(data.data);
       allTableDataRefVariable.current = data.data;
 

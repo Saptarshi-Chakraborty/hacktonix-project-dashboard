@@ -299,7 +299,6 @@ const Voter = () => {
                 setForceUpdate={setForceUpdate}
             />
 
-
         </div >
     )
 }
