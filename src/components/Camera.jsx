@@ -53,7 +53,7 @@ const Camera = ({ voter, isEditMode, voterImages, setVoterImages }) => {
         console.log("Clicking image...");
         if (images.length < 4) {
             const context = canvasRef.current.getContext('2d');
-            context.drawImage(videoElementRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+            context.drawImage(videoElementRef.current, 0, 0, "800", "600");
             const image = canvasRef.current.toDataURL('image/png');
             setImages([...images, image]);
 
@@ -82,7 +82,7 @@ const Camera = ({ voter, isEditMode, voterImages, setVoterImages }) => {
 
 
                             <video ref={videoElementRef} className="video" autoPlay={true} style={{ borderTopLeftRadius: "0.5rem", borderTopRightRadius: "0.5rem" }} />
-                            <canvas ref={canvasRef} className="canvas" style={{ display: "none" }} />
+                            <canvas ref={canvasRef} height="600px" width="800px" className="canvas" style={{ display: "none" }} />
 
                             {
                                 (images.length < 4) &&
@@ -92,12 +92,12 @@ const Camera = ({ voter, isEditMode, voterImages, setVoterImages }) => {
                         </div>
 
                         {/* Make a 4 by 4 grid and fit the images in equal spaces and fill the entire availavle space */}
-                        <div className="my-2 d-flex w-100 flex-row justify-content-space-evenly">
+                        <div className="my-2 d-flex flex-row justify-content-space-evenly" style={{width: "100vw !important"}}>
                             {
                                 images.map((image, index) => {
                                     return (
                                         // image of height of one fourth of the video
-                                        <img src={image} key={index} width="auto" style={{ aspectRatio: "1/1", height: "300px", margin: "5px" }} />
+                                        <img src={image} key={index} width="250vw" />
                                     )
                                 })
                             }
