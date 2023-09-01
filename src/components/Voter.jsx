@@ -104,7 +104,7 @@ const Voter = () => {
         e.preventDefault();
         console.table(voter);
 
-        if (voterImages.length < 4) {
+        if (voterImages.length < 4 && isEditMode === false) {
             toast.error("Please capture 4 images of the voter befoe submitting the form");
             return;
         }
@@ -131,9 +131,11 @@ const Voter = () => {
         for (let key in primaryFormData)
             formData.append(key, primaryFormData[key]);
 
-        // add images to formData
-        for (let i = 0; i < voterImages.length; i++) {
-            formData.append(`image${i + 1}`, voterImages[i]);
+        if (isEditMode === false) {
+            // add images to formData
+            for (let i = 0; i < voterImages.length; i++) {
+                formData.append(`image${i + 1}`, voterImages[i]);
+            }
         }
 
         const params = { method: "POST", body: formData };
