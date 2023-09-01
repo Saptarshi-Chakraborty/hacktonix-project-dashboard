@@ -23,7 +23,7 @@ const Navbar = () => {
                         </li>
 
                         <li className="nav-item">
-                            <Link className="nav-link active" aria-current="page" to="/option">Options Details</Link>
+                            <Link className="nav-link active" aria-current="page" to="/option">Party Details</Link>
                         </li>
 
 

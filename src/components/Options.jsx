@@ -72,10 +72,10 @@ const Options = () => {
             // console.log(`isEditMode: ${isEditMode}`);
 
             if (isEditMode == false) {
-                toast.success(`NEW OPTION CREATED SUCCESSFULLY - ID ${data.id}`);
-                console.log(`New Option ID : ${data.id}`);
+                toast.success(`NEW PARTY REGISTERED SUCCESSFULLY - ID ${data.id}`);
+                console.log(`New Party ID : ${data.id}`);
             } else {
-                toast.success("OPTION DATA EDITED SUCCESSFULY");
+                toast.success("PARTY DATA EDITED SUCCESSFULY");
             }
 
             resetForm();
@@ -102,25 +102,25 @@ const Options = () => {
 
     return (
         <div className="container py-2 px-0 mb-4">
-            <h1 className="text-center text-decoration-underline">Option Details</h1>
+            <h1 className="text-center text-decoration-underline">Party Details</h1>
 
             {/* <!-- Add new Voter --> */}
             <form onSubmit={submitForm} className="my-4 border border-2 border-warning p-2 rounded">
                 {/* if isEditMode is true */}
-                {isEditMode && <h2 className="mb-2">Edit option of id : {option.id}</h2>}
+                {isEditMode && <h2 className="mb-2">Edit party of id : {option.id}</h2>}
 
                 {/* if isEditMode is false */}
-                {isEditMode || <h2 className="mb-2">Add new Option</h2>}
+                {isEditMode || <h2 className="mb-2">Add new Party</h2>}
 
                 {/* <!-- Name --> */}
                 <div className="mb-3">
-                    <label htmlFor="optionName" className="form-label fw-bold">Option Name</label>
+                    <label htmlFor="optionName" className="form-label fw-bold">Party Name</label>
                     <input ref={nameRef} value={option.name} onChange={() => onChange(nameRef)} name='name' type="text" className="form-control" id="optionName" required={true} />
                 </div>
 
                 {/* <!-- Code --> */}
                 <div className="mb-3">
-                    <label htmlFor="optionCode" className="form-label fw-bold">Option Code</label>
+                    <label htmlFor="optionCode" className="form-label fw-bold">Unique Code</label>
                     <input ref={codeRef} value={option.code} onChange={() => onChange(codeRef)} name='code' type="text" className="form-control" id="optionCode" required={true} />
                 </div>
 
@@ -142,7 +142,7 @@ const Options = () => {
 
             {/* <!-- Show all options --> */}
             <DataTable
-                typeOfData="Option"
+                typeOfData="Party"
                 dataApi={getAllDataApi}
                 fetchingParam={{ action }}
                 fieldsHeading={allFields}
