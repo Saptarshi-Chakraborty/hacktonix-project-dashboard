@@ -4,6 +4,7 @@ import { isObjectEmpty } from '../utils/utils';
 import VoterDataCard from './VoterDataCard';
 import DataTable from './DataTable';
 import CONSTANT from '../constants';
+import Camera from './Camera';
 
 const Voter = () => {
     const nameRef = useRef(null);
@@ -20,6 +21,7 @@ const Voter = () => {
     const [newVoterData, setNewVoterData] = useState({});
     const [isEditMode, setIsEditMode] = useState(false);
     const [forceUpdate, setForceUpdate] = useState(false);
+    const [voterImages, setVoterImages] = useState([]);
 
     // Data Variables
     const getAllDataApi = CONSTANT.voterApi;
@@ -102,6 +104,11 @@ const Voter = () => {
         e.preventDefault();
         console.table(voter);
 
+        if (voterImages.length < 4) {
+            toast.error("Please capture 4 images of the voter befoe submitting the form");
+            return;
+        }
+
         const SUBMIT_API = CONSTANT.voterApi;
         let primaryFormData = {
             action: isEditMode ? "editVoter" : "newVoter",
@@ -124,7 +131,15 @@ const Voter = () => {
         for (let key in primaryFormData)
             formData.append(key, primaryFormData[key]);
 
+        // add images to formData
+        for (let i = 0; i < voterImages.length; i++) {
+            formData.append(`image${i + 1}`, voterImages[i]);
+        }
+
         const params = { method: "POST", body: formData };
+        // console.log(params);
+        // return;
+
 
         fetch(SUBMIT_API, params).then(data => data.text()).then((_rawData) => {
             console.log(_rawData);
@@ -277,9 +292,16 @@ const Voter = () => {
                     </select>
                 </div>
 
+                {/* Camera for voter's image */}
+                {
+                    (isEditMode === false && voter.name.length > 3 && voter.fatherName.length > 3 && voter.dob != "" && voter.address.length > 3) &&
+                    <Camera voter={voter} isEditMode={isEditMode} voterImages={voterImages} setVoterImages={setVoterImages} />
+                }
+
                 <button onClick={resetForm} type="reset" className="btn btn-lg btn-danger me-3" id="resetButton">Clear All</button>
                 <button type="submit" className="btn btn-lg btn-success">{isEditMode ? `Confirm Edit` : 'Submit'}</button>
             </form>
+
 
             {/* <!-- QR showing Card --> */}
             {
