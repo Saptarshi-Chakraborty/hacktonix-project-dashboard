@@ -26,7 +26,6 @@ const Camera = ({ voter, isEditMode, voterImages, setVoterImages }) => {
     const startCamera = () => {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({ video: true })
-
                 .then(stream => {
                     videoElementRef.current.srcObject = stream;
                     videoElementRef.current.play();
@@ -38,6 +37,45 @@ const Camera = ({ voter, isEditMode, voterImages, setVoterImages }) => {
                 });
         }
     }
+
+    // Function to switch the camera
+    const switchCamera = async () => {
+        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+
+                if (videoDevices.length > 1) {
+                    // Find the currently active camera
+                    const currentCameraIndex = videoDevices.findIndex(device => {
+                        return device.label === videoElementRef.current.srcObject.getVideoTracks()[0].label;
+                    });
+
+                    // Calculate the index of the next camera to switch to
+                    const nextCameraIndex = (currentCameraIndex + 1) % videoDevices.length;
+
+                    // Get the constraints for the next camera
+                    const nextCamera = videoDevices[nextCameraIndex];
+                    const constraints = { video: { deviceId: { exact: nextCamera.deviceId } } };
+
+                    // Stop the current stream
+                    videoElementRef.current.srcObject.getTracks().forEach(track => track.stop());
+
+                    // Start the new camera
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    videoElementRef.current.srcObject = stream;
+                    videoElementRef.current.play();
+                } else {
+                    toast.warn("Only one camera available.");
+                }
+            } catch (err) {
+                console.log(err);
+                toast.error('Error switching camera');
+                setErrorMessage('Error switching camera');
+            }
+        }
+    }
+
 
     // Stop camera
     const stopCamera = () => {
@@ -53,7 +91,7 @@ const Camera = ({ voter, isEditMode, voterImages, setVoterImages }) => {
         console.log("Clicking image...");
         if (images.length < 4) {
             const context = canvasRef.current.getContext('2d');
-            context.drawImage(videoElementRef.current, 0, 0, "800", "600");
+            context.drawImage(videoElementRef.current, 0, 0, "400", "300");
             const image = canvasRef.current.toDataURL('image/png');
             setImages([...images, image]);
 
@@ -70,7 +108,6 @@ const Camera = ({ voter, isEditMode, voterImages, setVoterImages }) => {
 
 
 
-
     return (
         <>
             {
@@ -82,17 +119,22 @@ const Camera = ({ voter, isEditMode, voterImages, setVoterImages }) => {
 
 
                             <video ref={videoElementRef} className="video" autoPlay={true} style={{ borderTopLeftRadius: "0.5rem", borderTopRightRadius: "0.5rem" }} />
-                            <canvas ref={canvasRef} height="600px" width="800px" className="canvas" style={{ display: "none" }} />
+                            <canvas ref={canvasRef} height="300px" width="400px" className="canvas" style={{ display: "none" }} />
 
                             {
                                 (images.length < 4) &&
                                 <button type="button" className='btn btn-small btn-primary' style={{ borderTopLeftRadius: "0px", borderTopRightRadius: "0px" }} onClick={captureImage}>Capture Image</button>
                             }
 
+                            {
+                                (images.length < 4) &&
+                                <button type="button" className='btn btn-small btn-primary' style={{ borderTopLeftRadius: "0px", borderTopRightRadius: "0px" }} onClick={switchCamera}>Switch Image</button>
+                            }
+
                         </div>
 
                         {/* Make a 4 by 4 grid and fit the images in equal spaces and fill the entire availavle space */}
-                        <div className="my-2 d-flex flex-row justify-content-space-evenly" style={{width: "100vw !important"}}>
+                        <div className="my-2 d-flex flex-row justify-content-space-evenly" style={{ width: "100vw !important" }}>
                             {
                                 images.map((image, index) => {
                                     return (
